@@ -2,12 +2,12 @@
 
 namespace Api.Dtos.Employee;
 
-public class GetEmployeeDto
+public record GetEmployeeDto
 {
-    public int Id { get; set; }
-    public string? FirstName { get; set; }
-    public string? LastName { get; set; }
-    public decimal Salary { get; set; }
-    public DateTime DateOfBirth { get; set; }
-    public ICollection<GetDependentDto> Dependents { get; set; } = new List<GetDependentDto>();
+    public int Id { get; init; }
+    public string? FirstName { get; init; }
+    public string? LastName { get; init; }
+    public decimal Salary { get; init; }
+    public DateTime DateOfBirth { get; init; }
+    public ICollection<GetDependentDto> Dependents { get; init; } = new List<GetDependentDto>();
 }

@@ -1,33 +1,20 @@
-using System;
 using System.Net.Http;
+using Api.Persistence;
+using Xunit;
 
 namespace ApiTests;
 
-public class IntegrationTest : IDisposable
+// NOTE(@doug): Refactored to use IClassFixture to create shared context for tests, 
+// as well as using the BenefitsCalculatorFactory to create the HttpClient instance.
+public class IntegrationTest : IClassFixture<BenefitsCalculatorFactory>
 {
-    private HttpClient? _httpClient;
+    protected readonly BenefitsCalculatorDbContext BenefitsDbContext;
+    protected readonly HttpClient HttpClient;
 
-    protected HttpClient HttpClient
+    public IntegrationTest(BenefitsCalculatorFactory factory)
     {
-        get
-        {
-            if (_httpClient == default)
-            {
-                _httpClient = new HttpClient
-                {
-                    //task: update your port if necessary
-                    BaseAddress = new Uri("https://localhost:7124")
-                };
-                _httpClient.DefaultRequestHeaders.Add("accept", "text/plain");
-            }
-
-            return _httpClient;
-        }
-    }
-
-    public void Dispose()
-    {
-        HttpClient.Dispose();
+        HttpClient = factory.CreateClient();
+        HttpClient.DefaultRequestHeaders.Add("accept", "text/plain");
+        BenefitsDbContext = factory.CreateDbContext();
     }
 }
-

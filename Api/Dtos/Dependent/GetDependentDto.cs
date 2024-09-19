@@ -2,11 +2,11 @@
 
 namespace Api.Dtos.Dependent;
 
-public class GetDependentDto
+public record GetDependentDto
 {
-    public int Id { get; set; }
-    public string? FirstName { get; set; }
-    public string? LastName { get; set; }
-    public DateTime DateOfBirth { get; set; }
-    public Relationship Relationship { get; set; }
+    public int Id { get; init; }
+    public string? FirstName { get; init; }
+    public string? LastName { get; init; }
+    public DateTime DateOfBirth { get; init; }
+    public Relationship Relationship { get; init; }
 }

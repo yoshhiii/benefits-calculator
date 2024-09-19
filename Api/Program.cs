@@ -1,10 +1,19 @@
+using Api;
+using Api.Persistence;
+using Api.Services;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+var appSettings = builder.Configuration.Get<AppSettings>();
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+
+builder.Services.AddServices();
+builder.Services.AddPersistence(appSettings.ConnectionStrings?.BenefitsCalculatorDb);
+builder.Services.AutoMapperInit();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -19,6 +28,8 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 var allowLocalhost = "allow localhost";
+
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(allowLocalhost,
@@ -43,3 +54,8 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+// NOTE(@doug): This is necessary to run the app in the test project
+public partial class Program
+{
+}

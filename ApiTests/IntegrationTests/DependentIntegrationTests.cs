@@ -10,6 +10,10 @@ namespace ApiTests.IntegrationTests;
 
 public class DependentIntegrationTests : IntegrationTest
 {
+    public DependentIntegrationTests(BenefitsCalculatorFactory factory) : base(factory)
+    {
+    }
+
     [Fact]
     //task: make test pass
     public async Task WhenAskedForAllDependents_ShouldReturnAllDependents()
@@ -77,4 +81,3 @@ public class DependentIntegrationTests : IntegrationTest
         await response.ShouldReturn(HttpStatusCode.NotFound);
     }
 }
-

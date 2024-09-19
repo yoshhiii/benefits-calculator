@@ -14,8 +14,9 @@ internal static class ShouldExtensions
         AssertCommonResponseParts(response, expectedStatusCode);
         return Task.CompletedTask;
     }
-    
-    public static async Task ShouldReturn<T>(this HttpResponseMessage response, HttpStatusCode expectedStatusCode, T expectedContent)
+
+    public static async Task ShouldReturn<T>(this HttpResponseMessage response, HttpStatusCode expectedStatusCode,
+        T expectedContent)
     {
         await response.ShouldReturn(expectedStatusCode);
         Assert.Equal("application/json", response.Content.Headers.ContentType?.MediaType);
@@ -29,4 +30,3 @@ internal static class ShouldExtensions
         Assert.Equal(expectedStatusCode, response.StatusCode);
     }
 }
-
