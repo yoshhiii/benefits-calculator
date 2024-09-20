@@ -6,5 +6,6 @@ public static class ServiceConfiguration
     {
         services.AddScoped<IEmployeeService, EmployeeService>();
         services.AddScoped<IDependentService, DependentService>();
+        services.AddScoped<IPaycheckService, PaycheckService>();
     }
 }

@@ -8,9 +8,9 @@ using Xunit;
 
 namespace ApiTests.IntegrationTests;
 
-public class DependentIntegrationTests : IntegrationTest
+public class DependentIntegrationTestsBase : IntegrationTestBase
 {
-    public DependentIntegrationTests(BenefitsCalculatorFactory factory) : base(factory)
+    public DependentIntegrationTestsBase(BenefitsCalculatorFactory factory) : base(factory)
     {
     }
 

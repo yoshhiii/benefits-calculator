@@ -5,13 +5,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ApiTests;
 
-// NOTE(@doug): Refactored to use WebApplicationFactory to create an instance of the api for testing
+// NOTE(@doug): Refactored to use WebApplicationFactory to create an instance of the api in memory for testing
 // as opposed to running the api in a separate process -- mostly done as a convenience for local
 // development and testing.
 public class BenefitsCalculatorFactory : WebApplicationFactory<Program>
 {
     private const string IntegrationDatabase = "Data Source=IntegrationDatabase.db";
-    private static volatile bool _databaseInitialized;
     private static readonly object _lock = new();
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -28,7 +27,6 @@ public class BenefitsCalculatorFactory : WebApplicationFactory<Program>
                 .UseSqlite(IntegrationDatabase).Options);
 
             dbContext.Database.EnsureCreated();
-            _databaseInitialized = true;
             return dbContext;
         }
     }

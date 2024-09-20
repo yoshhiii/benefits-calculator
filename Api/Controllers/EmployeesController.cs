@@ -11,10 +11,12 @@ namespace Api.Controllers;
 public class EmployeesController : ControllerBase
 {
     private readonly IEmployeeService _employeeService;
+    private readonly IPaycheckService _paycheckService;
 
-    public EmployeesController(IEmployeeService employeeService)
+    public EmployeesController(IEmployeeService employeeService, IPaycheckService paycheckService)
     {
         _employeeService = employeeService;
+        _paycheckService = paycheckService;
     }
 
     [SwaggerOperation(Summary = "Get employee by id")]
@@ -74,6 +76,42 @@ public class EmployeesController : ControllerBase
         catch (Exception e)
         {
             return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse<GetEmployeeDto>
+            {
+                Message = e.Message,
+                Error = e.Message,
+                Success = false
+            });
+        }
+    }
+
+    [SwaggerOperation(Summary = "Get paycheck for an employee")]
+    [HttpGet("{id}/paycheck")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<ApiResponse<GetEmployeePaycheckDto>>> GetPaycheck(int id)
+    {
+        try
+        {
+            var paycheck = await _paycheckService.GetPaycheckByEmployee(id);
+
+            return Ok(new ApiResponse<GetEmployeePaycheckDto>
+            {
+                Data = paycheck,
+                Success = true
+            });
+        }
+        catch (Exception e)
+        {
+            if (e is KeyNotFoundException)
+                return NotFound(new ApiResponse<GetEmployeePaycheckDto>
+                {
+                    Message = e.Message,
+                    Error = e.Message,
+                    Success = false
+                });
+
+            return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse<GetEmployeePaycheckDto>
             {
                 Message = e.Message,
                 Error = e.Message,

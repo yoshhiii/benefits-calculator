@@ -9,9 +9,9 @@ using Xunit;
 
 namespace ApiTests.IntegrationTests;
 
-public class EmployeeIntegrationTests : IntegrationTest
+public class EmployeeIntegrationTestsBase : IntegrationTestBase
 {
-    public EmployeeIntegrationTests(BenefitsCalculatorFactory factory) : base(factory)
+    public EmployeeIntegrationTestsBase(BenefitsCalculatorFactory factory) : base(factory)
     {
     }
 
@@ -108,6 +108,33 @@ public class EmployeeIntegrationTests : IntegrationTest
     public async Task WhenAskedForANonexistentEmployee_ShouldReturn404()
     {
         var response = await HttpClient.GetAsync($"/api/v1/employees/{int.MinValue}");
+        await response.ShouldReturn(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task WhenAskedForAPaycheckForAnEmployee_ShouldReturnCorrectPaycheck()
+    {
+        var response = await HttpClient.GetAsync("/api/v1/employees/1/paycheck");
+        var salary = 75420.99m;
+        var baseBenefitCost = 1000m;
+
+        var paycheck = new GetEmployeePaycheckDto
+        {
+            EmployeeId = 1,
+            EmployeeFirstName = "LeBron",
+            EmployeeLastName = "James",
+            BasePay = Math.Round(salary / 26, 2),
+            BenefitCosts = Math.Round(baseBenefitCost * 12 / 26, 2),
+            NetPay = Math.Round(salary / 26 - baseBenefitCost * 12 / 26, 2)
+        };
+        await response.ShouldReturn(HttpStatusCode.OK, paycheck);
+    }
+
+
+    [Fact]
+    public async Task WhenAskedForAPaycheckForNonexistentEmployee_ShouldReturn404()
+    {
+        var response = await HttpClient.GetAsync($"/api/v1/employees/{int.MinValue}/paycheck");
         await response.ShouldReturn(HttpStatusCode.NotFound);
     }
 }

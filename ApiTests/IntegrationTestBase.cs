@@ -6,12 +6,12 @@ namespace ApiTests;
 
 // NOTE(@doug): Refactored to use IClassFixture to create shared context for tests, 
 // as well as using the BenefitsCalculatorFactory to create the HttpClient instance.
-public class IntegrationTest : IClassFixture<BenefitsCalculatorFactory>
+public class IntegrationTestBase : IClassFixture<BenefitsCalculatorFactory>
 {
     protected readonly BenefitsCalculatorDbContext BenefitsDbContext;
     protected readonly HttpClient HttpClient;
 
-    public IntegrationTest(BenefitsCalculatorFactory factory)
+    public IntegrationTestBase(BenefitsCalculatorFactory factory)
     {
         HttpClient = factory.CreateClient();
         HttpClient.DefaultRequestHeaders.Add("accept", "text/plain");
