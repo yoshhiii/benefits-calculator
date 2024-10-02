@@ -24,32 +24,20 @@ public class DependentsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<ApiResponse<GetDependentDto>>> Get(int id)
     {
-        try
-        {
-            var dependent = await _dependentService.GetDependentById(id);
-            if (dependent is null)
-                return NotFound(new ApiResponse<GetDependentDto>
-                {
-                    Message = "Employee not found",
-                    Error = "Employee not found",
-                    Success = false
-                });
-
-            return Ok(new ApiResponse<GetDependentDto>
+        var dependent = await _dependentService.GetDependentById(id);
+        if (dependent is null)
+            return NotFound(new ApiResponse<GetDependentDto>
             {
-                Data = dependent,
-                Success = true
-            });
-        }
-        catch (Exception e)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse<GetDependentDto>
-            {
-                Message = e.Message,
-                Error = e.Message,
+                Message = "Employee not found",
+                Error = "Employee not found",
                 Success = false
             });
-        }
+
+        return Ok(new ApiResponse<GetDependentDto>
+        {
+            Data = dependent,
+            Success = true
+        });
     }
 
     [SwaggerOperation(Summary = "Get all dependents")]
@@ -59,26 +47,14 @@ public class DependentsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<ApiResponse<List<GetDependentDto>>>> GetAll()
     {
-        try
-        {
-            var dependents = await _dependentService.GetAllDependents();
+        var dependents = await _dependentService.GetAllDependents();
 
-            if (dependents.Count == 0) return NoContent();
+        if (dependents.Count == 0) return NoContent();
 
-            return Ok(new ApiResponse<List<GetDependentDto>>
-            {
-                Data = dependents.ToList(),
-                Success = true
-            });
-        }
-        catch (Exception e)
+        return Ok(new ApiResponse<List<GetDependentDto>>
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse<GetDependentDto>
-            {
-                Message = e.Message,
-                Error = e.Message,
-                Success = false
-            });
-        }
+            Data = dependents.ToList(),
+            Success = true
+        });
     }
 }

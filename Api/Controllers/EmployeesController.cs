@@ -26,32 +26,20 @@ public class EmployeesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<ApiResponse<GetEmployeeDto>>> Get(int id)
     {
-        try
-        {
-            var employee = await _employeeService.GetEmployeeById(id);
-            if (employee is null)
-                return NotFound(new ApiResponse<GetEmployeeDto>
-                {
-                    Message = "Employee not found",
-                    Error = "Employee not found",
-                    Success = false
-                });
-
-            return Ok(new ApiResponse<GetEmployeeDto>
+        var employee = await _employeeService.GetEmployeeById(id);
+        if (employee is null)
+            return NotFound(new ApiResponse<GetEmployeeDto>
             {
-                Data = employee,
-                Success = true
-            });
-        }
-        catch (Exception e)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse<GetEmployeeDto>
-            {
-                Message = e.Message,
-                Error = e.Message,
+                Message = "Employee not found",
+                Error = "Employee not found",
                 Success = false
             });
-        }
+
+        return Ok(new ApiResponse<GetEmployeeDto>
+        {
+            Data = employee,
+            Success = true
+        });
     }
 
     [SwaggerOperation(Summary = "Get all employees")]
@@ -61,27 +49,15 @@ public class EmployeesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<ApiResponse<List<GetEmployeeDto>>>> GetAll()
     {
-        try
-        {
-            var employees = await _employeeService.GetAllEmployees();
+        var employees = await _employeeService.GetAllEmployees();
 
-            if (employees.Count == 0) return NoContent();
+        if (employees.Count == 0) return NoContent();
 
-            return Ok(new ApiResponse<List<GetEmployeeDto>>
-            {
-                Data = employees.ToList(),
-                Success = true
-            });
-        }
-        catch (Exception e)
+        return Ok(new ApiResponse<List<GetEmployeeDto>>
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse<GetEmployeeDto>
-            {
-                Message = e.Message,
-                Error = e.Message,
-                Success = false
-            });
-        }
+            Data = employees.ToList(),
+            Success = true
+        });
     }
 
     [SwaggerOperation(Summary = "Get paycheck for an employee")]
@@ -91,32 +67,12 @@ public class EmployeesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<ApiResponse<GetEmployeePaycheckDto>>> GetPaycheck(int id)
     {
-        try
-        {
-            var paycheck = await _paycheckService.GetPaycheckByEmployee(id);
+        var paycheck = await _paycheckService.GetPaycheckByEmployee(id);
 
-            return Ok(new ApiResponse<GetEmployeePaycheckDto>
-            {
-                Data = paycheck,
-                Success = true
-            });
-        }
-        catch (Exception e)
+        return Ok(new ApiResponse<GetEmployeePaycheckDto>
         {
-            if (e is KeyNotFoundException)
-                return NotFound(new ApiResponse<GetEmployeePaycheckDto>
-                {
-                    Message = e.Message,
-                    Error = e.Message,
-                    Success = false
-                });
-
-            return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse<GetEmployeePaycheckDto>
-            {
-                Message = e.Message,
-                Error = e.Message,
-                Success = false
-            });
-        }
+            Data = paycheck,
+            Success = true
+        });
     }
 }

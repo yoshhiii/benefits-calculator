@@ -1,7 +1,9 @@
 using Api;
+using Api.Middlewares;
 using Api.Persistence;
 using Api.Services;
 using Microsoft.OpenApi.Models;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 var appSettings = builder.Configuration.Get<AppSettings>();
@@ -10,8 +12,12 @@ var appSettings = builder.Configuration.Get<AppSettings>();
 
 builder.Services.AddControllers();
 
-builder.Services.AddServices();
+Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
+builder.Services.AddSerilog();
+builder.Services.AddMemoryCache();
 builder.Services.AddPersistence(appSettings.ConnectionStrings?.BenefitsCalculatorDb);
+builder.Services.AddServices();
+builder.Services.AddTransient<GlobalExceptionHandlingMiddleware>();
 builder.Services.AutoMapperInit();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -50,6 +56,8 @@ app.UseCors(allowLocalhost);
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 
 app.MapControllers();
 
